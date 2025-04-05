@@ -1,0 +1,30 @@
+name: Build & Publish Docker
+on:
+  push:
+    branches:
+      - 'dev/**'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+    - name: Install Python3   
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        architecture: 'x64'
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        fetch-depth: 0
+
+    - name: Build Docker Images
+      run: python build.py
+      env:
+        DOCKER_REPO: ${{ secrets.DOCKER_REPO }} 
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }} 
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }} 
