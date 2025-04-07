@@ -14,7 +14,6 @@ echo "  - PROSODY_E2E_ENCRYPTION_WHITELIST: $PROSODY_E2E_ENCRYPTION_WHITELIST"
 
 RANDOM_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
 
-sed -i "s/^user=.*/user=$RANDOM_SECRET:$RANDOM_SECRET/" /app/turnserver.conf
 sed -i "s/^realm=.*/realm=$PROSODY_DOMAIN/" /app/turnserver.conf
 sed -i "s/^static-auth-secret=.*/static-auth-secret=$RANDOM_SECRET/" /app/turnserver.conf
 sed -i "s/^external-ip=.*/external-ip=$EXTERNAL_IP/" /app/turnserver.conf
