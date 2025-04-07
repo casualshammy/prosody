@@ -10,6 +10,16 @@ certificates = "/app/certs"
 log = {
     {levels = {min = "info"}, to = "console"};
 };
+-- limits = {
+--     c2s = {
+--         rate = "3kb/s";
+--         burst = "2s";
+--     };
+--     s2sin = {
+--         rate = "30kb/s";
+--         burst = "3s";
+--     };
+-- }
 
 interfaces = { "0.0.0.0" };
 

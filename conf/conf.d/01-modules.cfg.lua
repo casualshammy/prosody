@@ -26,7 +26,7 @@ modules_enabled = {
 		"invites_adhoc"; -- Allow admins/users to create invitations via their client
 		"invites_register"; -- Allows invited users to create accounts
 		"ping"; -- Replies to XMPP pings with pongs
-		-- "register"; -- Allow users to register on this server using a client and change passwords
+		"register"; -- Allow users to register on this server using a client and change passwords
 		"time"; -- Let others know the time here on this server
 		"uptime"; -- Report how long server has been running
 		"version"; -- Replies to server version requests

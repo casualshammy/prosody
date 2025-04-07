@@ -42,6 +42,7 @@ COPY ./entrypoint.sh /app/entrypoint.sh
 RUN useradd --uid 9999 prosody_app && groupmod -g 9999 prosody_app
 
 RUN \
+  echo 'user=s64fdc2ss1c2fsd6:6sd8f4x2sdf4x2sd1f' >> /etc/turnserver.conf && \
   echo 'min-port=50000' >> /etc/turnserver.conf && \
   echo 'max-port=50100' >> /etc/turnserver.conf && \
   echo 'no-multicast-peers' >> /etc/turnserver.conf && \
