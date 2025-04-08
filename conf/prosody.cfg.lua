@@ -1,4 +1,8 @@
-admins = { os.getenv("PROSODY_ADMIN") }
+local adminJid = os.getenv("PROSODY_ADMIN");
+if (adminJid ~= nil) then
+    admins = { adminJid }
+end
+
 pidfile = "/app/prosody.pid";
 allow_registration = os.getenv("PROSODY_ALLOW_REGISTRATION") == "true";
 c2s_require_encryption = true;

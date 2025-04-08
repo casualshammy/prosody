@@ -1,5 +1,5 @@
-e2e_policy_chat = os.getenv("PROSODY_E2E_ENCRYPTION_REQUIRED") == true and "required" or "optional"
-e2e_policy_muc = os.getenv("PROSODY_E2E_ENCRYPTION_REQUIRED") == true and "required" or "optional"
+e2e_policy_chat = os.getenv("PROSODY_E2E_ENCRYPTION_REQUIRED") == "true" and "required" or "optional"
+e2e_policy_muc = os.getenv("PROSODY_E2E_ENCRYPTION_REQUIRED") == "true" and "required" or "optional"
 
 e2e_policy_whitelist = os.getenv("PROSODY_E2E_ENCRYPTION_WHITELIST")
 

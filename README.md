@@ -5,7 +5,7 @@ This Docker image is designed for those who want to run their own XMPP server wi
 - Based on the well-established XMPP server [Prosody](https://prosody.im/).
 - Configured to achieve a 100% score on the [XMPP Compliance Tester](https://compliance.conversations.im/).
 - Audio/video call support: the image includes a configured STUN/TURN server [coturn](https://github.com/coturn/coturn).
-- Unencrypted connections between clients and the server are prohibited. E2E encryption is mandatory.
+- Unencrypted connections between clients and the server are prohibited. E2E encryption is [optionally] mandatory.
 - Minimal setup: only the absolute minimum configuration is required.
 
 ## Running the Server
@@ -61,8 +61,9 @@ services:
 6. If you cannot log in, restart the server and check the logs in the console: `docker compose down && docker compose up`.
 
 ### Environment Variables
+- `PROSODY_DOMAIN`: (MANDATORY) The domain where your server will operate.
+- `PROSODY_EXTERNAL_IP`: External IP. Useful if your computer has more than 1 external IP address.
 - `PROSODY_ADMIN`: JID of the server administrator.
 - `PROSODY_ALLOW_REGISTRATION`: Whether to allow free registration on the server.
-- `PROSODY_DOMAIN`: The domain where your server will operate.
 - `PROSODY_E2E_ENCRYPTION_REQUIRED`: Whether E2E encryption is mandatory.
 - `PROSODY_E2E_ENCRYPTION_WHITELIST`: A comma-separated list of JIDs for which E2E encryption is not mandatory.
