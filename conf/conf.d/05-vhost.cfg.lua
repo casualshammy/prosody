@@ -47,3 +47,11 @@ Component (domain_proxy) "proxy65"
 
 -- Implements a XEP-0060 pubsub service.
 Component (domain_pubsub) "pubsub"
+	modules_enabled = {
+		"pubsub_feeds",
+		"pubsub_text_interface"
+	}
+	feeds = {
+		-- The part before = is used as PubSub node
+		meduza_io = "https://meduza.io/rss2/all";
+	}
