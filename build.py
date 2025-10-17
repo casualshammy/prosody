@@ -1,5 +1,5 @@
 import os
-# import argparse
+import argparse
 from build_common import git, docker, utils
 
 dockerRepo = os.getenv('DOCKER_REPO')
@@ -14,10 +14,10 @@ dockerPassword = os.getenv('DOCKER_PASSWORD')
 if not dockerPassword:
   raise Exception("DOCKER_PASSWORD environment variable is not set")
 
-# argParser = argparse.ArgumentParser()
-# argParser.add_argument('--platform', type=str, default= "linux-amd64", required = False)
-# args = argParser.parse_args()
-# platform: str = args.platform
+argParser = argparse.ArgumentParser()
+argParser.add_argument('--platform', type=str, required = True)
+args = argParser.parse_args()
+platform: str = args.platform
 
 version = f"{git.get_version_from_current_branch()}.{git.get_last_commit_index()}"
 
@@ -25,8 +25,8 @@ print(f"===========================================", flush=True)
 print(f"Creating docker image...", flush=True)
 print(f"Version: '{version}'", flush=True)
 print(f"===========================================", flush=True)
-docker.buildPush(f"{dockerRepo}:{version}", f"Dockerfile", dockerLogin, dockerPassword)
-docker.buildPush(f"{dockerRepo}:latest", f"Dockerfile", dockerLogin, dockerPassword)
+docker.buildPush(f"{dockerRepo}:{version}-{platform}", f"Dockerfile", dockerLogin, dockerPassword)
+docker.buildPush(f"{dockerRepo}:latest-{platform}", f"Dockerfile", dockerLogin, dockerPassword)
 
 print(f"===========================================", flush=True)
 print(f"Done!", flush=True)

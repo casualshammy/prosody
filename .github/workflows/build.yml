@@ -23,7 +23,7 @@ jobs:
         fetch-depth: 0
 
     - name: Build Docker Images
-      run: python build.py
+      run: python build.py --platform linux-amd64
       env:
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }} 
         DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }} 
@@ -47,7 +47,7 @@ jobs:
         fetch-depth: 0
 
     - name: Build Docker Images
-      run: python build.py
+      run: python build.py --platform linux-arm64
       env:
         DOCKER_REPO: ${{ secrets.DOCKER_REPO }} 
         DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }} 
