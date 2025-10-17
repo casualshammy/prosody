@@ -1,9 +1,23 @@
 import os
+# import argparse
 from build_common import git, docker, utils
 
 dockerRepo = os.getenv('DOCKER_REPO')
+if not dockerRepo:
+  raise Exception("DOCKER_REPO environment variable is not set")
+
 dockerLogin = os.getenv('DOCKER_LOGIN')
+if not dockerLogin:
+  raise Exception("DOCKER_LOGIN environment variable is not set")
+
 dockerPassword = os.getenv('DOCKER_PASSWORD')
+if not dockerPassword:
+  raise Exception("DOCKER_PASSWORD environment variable is not set")
+
+# argParser = argparse.ArgumentParser()
+# argParser.add_argument('--platform', type=str, default= "linux-amd64", required = False)
+# args = argParser.parse_args()
+# platform: str = args.platform
 
 version = f"{git.get_version_from_current_branch()}.{git.get_last_commit_index()}"
 
