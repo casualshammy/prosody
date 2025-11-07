@@ -11,7 +11,7 @@ This Docker image is designed for those who want to run their own XMPP server wi
 ## Running the Server
 ### Preparation
 You will need:
-- A computer with an external IP address capable of running Docker images for linux/amd64.
+- A computer with an external IP address capable of running Docker images for `linux/amd64` or `linux/arm64`.
 - DNS setup. Suppose you want your XMPP server to be hosted on the domain `example.com`; then the following domains must point (A or AAAA record) to the external IP address:
    - `example.com`
    - `upload.example.com`
