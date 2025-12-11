@@ -56,13 +56,17 @@ modules_enabled = {
 		--"watchregistrations"; -- Alert admins of registrations
 		--"welcome"; -- Welcome users who register accounts
 
-		"cloud_notify"; -- # XEP-0357: Push Notifications
     "e2e_policy"; -- # require end-2-end encryption
     "filter_chatstates"; -- # disable "X is typing" type messages
     "throttle_presence"; -- # presence throttling in CSI
+
+		"sasl2";
+		"sasl2_bind2";
+		"sasl2_sm";
+		"sasl2_fast";
 }
 
-turn_external_host = os.getenv("PROSODY_DOMAIN");
+turn_external_host = Lua.os.getenv("PROSODY_DOMAIN");
 turn_external_secret="%coturn-secret%";
 
 -- These modules are auto-loaded, but should you want

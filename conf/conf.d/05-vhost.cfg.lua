@@ -1,4 +1,4 @@
-local domain = os.getenv("PROSODY_DOMAIN")
+local domain = Lua.os.getenv("PROSODY_DOMAIN")
 local domain_http_upload = "upload." .. domain
 local domain_muc = "muc." .. domain
 local domain_proxy = "proxy." .. domain
@@ -36,8 +36,7 @@ Component (domain_muc) "muc"
 	restrict_room_creation = false
 	max_history_messages = 20
 	modules_enabled = {
-		"muc_mam",
-		"vcard_muc"
+		"muc_mam"
 	}
 
 -- Set up a SOCKS5 bytestream proxy for server-proxied file transfers

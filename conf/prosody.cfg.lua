@@ -1,10 +1,10 @@
-local adminJid = os.getenv("PROSODY_ADMIN");
+local adminJid = Lua.os.getenv("PROSODY_ADMIN");
 if (adminJid ~= nil) then
     admins = { adminJid }
 end
 
 pidfile = "/app/prosody.pid";
-allow_registration = os.getenv("PROSODY_ALLOW_REGISTRATION") == "true";
+allow_registration = Lua.os.getenv("PROSODY_ALLOW_REGISTRATION") == "true";
 c2s_require_encryption = true;
 s2s_require_encryption = true;
 s2s_secure_auth = true
