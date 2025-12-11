@@ -1,7 +1,7 @@
 # Prosody Docker Image with STUN/TURN
 This Docker image is designed for those who want to run their own XMPP server without dealing with complex configuration files.
 
-![Docker Pulls](https://img.shields.io/docker/pulls/oixa/prosody?style=for-the-badge&label=oixa%2Fprosody&link=https%3A%2F%2Fhub.docker.com%2Fr%2Foixa%2Fprosody)
+[![Docker Pulls](https://img.shields.io/docker/pulls/oixa/prosody?style=for-the-badge&label=oixa%2Fprosody&link=https%3A%2F%2Fhub.docker.com%2Fr%2Foixa%2Fprosody)](https://hub.docker.com/r/oixa/prosody)
 
 ## Features
 - Based on the well-established XMPP server [Prosody](https://prosody.im/).
@@ -59,8 +59,11 @@ services:
       - /home/prosody/data:/app/data
 ```
 4. Start the server with the command `docker compose up -d`.
-5. To register a user (if you have not allowed registration via XMPP clients), use the following command: `docker exec -it prosody-server-1 prosodyctl register <LOGIN> <DOMAIN> <PASSWORD>`. Replace the placeholders with your data.
-6. If you cannot log in, restart the server and check the logs in the console: `docker compose down && docker compose up`.
+5. If you cannot log in, restart the server and check the logs in the console: `docker compose down && docker compose up`.
+
+### Useful commands
+1. To register a user (if you have not allowed registration via XMPP clients), use the following command: `docker exec -it prosody-server-1 prosodyctl register <LOGIN> <DOMAIN> <PASSWORD>`. Replace the placeholders with your data.
+2. To print TURN server password use the following command: `docker exec -it prosody-server-1 cat turnserver.conf | grep static-auth-secret=`
 
 ### Environment Variables
 - `PROSODY_DOMAIN`: (MANDATORY) The domain where your server will operate.
