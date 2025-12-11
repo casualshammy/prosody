@@ -28,7 +28,7 @@ EXPOSE 5269/tcp
 EXPOSE 5281/tcp
 
 WORKDIR /app
-RUN apt update -y && apt install wget -y
+RUN apt update -y && apt install wget lsb-release -y
 RUN wget https://prosody.im/downloads/repos/$(lsb_release -sc)/prosody.sources -O /etc/apt/sources.list.d/prosody.sources
 RUN apt update -y && apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && rm -rf /var/lib/apt/lists/*
 
