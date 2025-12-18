@@ -28,10 +28,13 @@ EXPOSE 5269/tcp
 EXPOSE 5281/tcp
 
 WORKDIR /app
-RUN apt update -y && apt install wget lsb-release -y
-RUN wget https://prosody.im/downloads/repos/$(lsb_release -sc)/prosody.sources -O /etc/apt/sources.list.d/prosody.sources
-RUN apt update -y && apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 -y
-RUN rm -rf /var/lib/apt/lists/*
+RUN apt update -y && \ 
+  apt install wget lsb-release -y \
+  wget https://prosody.im/downloads/repos/$(lsb_release -sc)/prosody.sources -O /etc/apt/sources.list.d/prosody.sources \
+  apt update -y && \
+  apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && \
+  apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 lsb-release -y && \ 
+  rm -rf /var/lib/apt/lists/*
 
 # Creating folder structure
 RUN mkdir /app/certs && mkdir /app/data && mkdir /app/modules

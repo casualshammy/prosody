@@ -56,6 +56,7 @@ modules_enabled = {
 		--"watchregistrations"; -- Alert admins of registrations
 		--"welcome"; -- Welcome users who register accounts
 
+    "cloud_notify"; -- # XEP-0357: Push Notifications
     "e2e_policy"; -- # require end-2-end encryption
     "filter_chatstates"; -- # disable "X is typing" type messages
     "throttle_presence"; -- # presence throttling in CSI
