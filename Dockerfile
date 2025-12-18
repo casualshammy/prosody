@@ -29,8 +29,8 @@ EXPOSE 5281/tcp
 
 WORKDIR /app
 RUN apt update -y && \ 
-  apt install wget lsb-release -y \
-  wget https://prosody.im/downloads/repos/$(lsb_release -sc)/prosody.sources -O /etc/apt/sources.list.d/prosody.sources \
+  apt install wget lsb-release -y && \
+  wget https://prosody.im/downloads/repos/$(lsb_release -sc)/prosody.sources -O /etc/apt/sources.list.d/prosody.sources && \
   apt update -y && \
   apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && \
   apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 lsb-release -y && \ 
