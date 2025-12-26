@@ -38,7 +38,7 @@ modules_enabled = {
 		"admin_shell"; -- Allow secure administration via 'prosodyctl shell'
 
 	-- HTTP modules
-		--"bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
+		"bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
 		--"http_openmetrics"; -- for exposing metrics to stats collectors
 		--"websocket"; -- XMPP over WebSockets
 

@@ -29,18 +29,22 @@ EXPOSE 5281/tcp
 
 WORKDIR /app
 RUN apt update -y && \ 
-  apt install wget lsb-release -y && \
-  wget https://prosody.im/downloads/repos/$(lsb_release -sc)/prosody.sources -O /etc/apt/sources.list.d/prosody.sources && \
+  apt install wget -y && \
+  wget https://prosody.im/downloads/repos/bookworm/prosody.sources -O /etc/apt/sources.list.d/prosody.sources && \
   apt update -y && \
   apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && \
-  apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 lsb-release -y && \ 
+  apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 -y && \ 
   rm -rf /var/lib/apt/lists/*
 
 # Creating folder structure
-RUN mkdir /app/certs && mkdir /app/data && mkdir /app/modules
+RUN mkdir /app/certs && \
+  mkdir /app/data && \
+  mkdir /app/modules
 
 # Download and unpack Prosody modules
-RUN wget https://hg.prosody.im/prosody-modules/archive/tip.tar.gz && tar -xzf tip.tar.gz -C "/app/modules" --strip-components=1 && rm tip.tar.gz
+RUN wget https://hg.prosody.im/prosody-modules/archive/tip.tar.gz && \
+  tar -xzf tip.tar.gz -C "/app/modules" --strip-components=1 && \
+  rm tip.tar.gz
 
 COPY ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
 COPY ./conf/conf.d /etc/prosody/conf.d
