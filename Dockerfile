@@ -32,7 +32,7 @@ RUN apt update -y && \
   apt install wget -y && \
   wget https://prosody.im/downloads/repos/bookworm/prosody.sources -O /etc/apt/sources.list.d/prosody.sources && \
   apt update -y && \
-  apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && \
+  apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 python3 -y && \
   apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 -y && \ 
   rm -rf /var/lib/apt/lists/*
 
@@ -49,6 +49,8 @@ RUN wget https://hg.prosody.im/prosody-modules/archive/tip.tar.gz && \
 COPY ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
 COPY ./conf/conf.d /etc/prosody/conf.d
 COPY ./entrypoint.sh /app/entrypoint.sh
+COPY ./host-meta-server.py /app/host-meta-server.py
+COPY ./host-meta /app/host-meta
 
 RUN useradd --uid 9999 prosody_app && groupmod -g 9999 prosody_app
 

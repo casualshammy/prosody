@@ -19,10 +19,18 @@ echo "  - PROSODY_E2E_ENCRYPTION_WHITELIST: $PROSODY_E2E_ENCRYPTION_WHITELIST"
 
 RANDOM_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
 
+echo "Adjusting configuration..."
 sed -i "s/^realm=.*/realm=$PROSODY_DOMAIN/" /app/turnserver.conf
 sed -i "s/^static-auth-secret=.*/static-auth-secret=$RANDOM_SECRET/" /app/turnserver.conf
 sed -i "s/^external-ip=.*/external-ip=$EXTERNAL_IP/" /app/turnserver.conf
 sed -i "s/^turn_external_secret=.*/turn_external_secret=\"$RANDOM_SECRET\"/" /etc/prosody/conf.d/01-modules.cfg.lua
+sed -i "s|https://[^:]*:5281/http-bind|https://$PROSODY_DOMAIN:5281/http-bind|g" /app/host-meta
 
+echo "Starting host-meta server..."
+python3 /app/host-meta-server.py &
+
+echo "Starting turnserver..."
 /usr/bin/turnserver -c /app/turnserver.conf --daemon --pidfile=/app/turnserver.pid
+
+echo "Starting prosody..."
 /usr/bin/prosody -F
