@@ -63,7 +63,8 @@ services:
 
 ### Useful commands
 1. To register a user (if you have not allowed registration via XMPP clients), use the following command: `docker exec -it prosody-server-1 prosodyctl register <LOGIN> <DOMAIN> <PASSWORD>`. Replace the placeholders with your data.
-2. To print TURN server password use the following command: `docker exec -it prosody-server-1 cat turnserver.conf | grep static-auth-secret=`
+2. To display live logs: `docker logs -ft prosody-server-1`
+3. To print TURN server password use the following command: `docker exec -it prosody-server-1 cat turnserver.conf | grep static-auth-secret=`
 
 ### Environment Variables
 - `PROSODY_DOMAIN`: (MANDATORY) The domain where your server will operate.

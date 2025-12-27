@@ -35,7 +35,7 @@ RUN apt update -y && \
   apt install wget -y && \
   wget https://prosody.im/downloads/repos/bookworm/prosody.sources -O /etc/apt/sources.list.d/prosody.sources && \
   apt update -y && \
-  apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 python3 nohup -y && \
+  apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 python3 -y && \
   apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 -y && \ 
   rm -rf /var/lib/apt/lists/*
 
