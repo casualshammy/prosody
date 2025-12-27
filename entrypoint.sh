@@ -27,7 +27,7 @@ sed -i "s/^turn_external_secret=.*/turn_external_secret=\"$RANDOM_SECRET\"/" /et
 sed -i "s|https://[^:]*:5281/http-bind|https://$PROSODY_DOMAIN:5281/http-bind|g" /app/host-meta
 
 echo "Starting host-meta server..."
-python3 /app/host-meta-server.py &
+nohup python3 -u /app/host-meta-server.py &
 
 echo "Starting turnserver..."
 /usr/bin/turnserver -c /app/turnserver.conf --daemon --pidfile=/app/turnserver.pid
