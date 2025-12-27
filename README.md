@@ -34,30 +34,32 @@ Alternatively, you can use a subdomain, such as `xmpp.example.com`.
          - fullchain.pem
          - privkey.pem
 3. Create a `docker-compose.yml` file with the following content (don't forget to replace `example.com` with your domain and `/home/prosody` with your folder where the Prosody database is stored):
-```yml
-services:
-  server:
-    image: oixa/prosody:latest
-    restart: always
-    ports:
-      - "3478:3478/tcp"
-      - "3478:3478/udp"
-      - "5000:5000/tcp"
-      - "5222:5222/tcp"
-      - "5223:5223/tcp"
-      - "5269:5269/tcp"
-      - "5281:5281/tcp"
-      - "50000-50100:50000-50100/udp"
-    environment:
-      PROSODY_ADMIN: admin@example.com
-      PROSODY_ALLOW_REGISTRATION: false
-      PROSODY_DOMAIN: example.com
-      PROSODY_E2E_ENCRYPTION_REQUIRED: true
-      PROSODY_E2E_ENCRYPTION_WHITELIST: noreply@example.com
-    volumes:
-      - /home/prosody/certs:/app/certs:ro
-      - /home/prosody/data:/app/data
-```
+   ```yml
+   services:
+     server:
+       image: oixa/prosody:latest
+       restart: always
+       ports:
+         - "443:443/tcp"
+         - "3478:3478/tcp"
+         - "3478:3478/udp"
+         - "5000:5000/tcp"
+         - "5222:5222/tcp"
+         - "5223:5223/tcp"
+         - "5269:5269/tcp"
+         - "5281:5281/tcp"
+         - "50000-50100:50000-50100/udp"
+       environment:
+         PROSODY_ADMIN: admin@example.com
+         PROSODY_ALLOW_REGISTRATION: false
+         PROSODY_DOMAIN: example.com
+         PROSODY_E2E_ENCRYPTION_REQUIRED: true
+         PROSODY_E2E_ENCRYPTION_WHITELIST: noreply@example.com
+       volumes:
+         - /home/prosody/certs:/app/certs:ro
+         - /home/prosody/data:/app/data
+   ```
+   **Note:** If you do not plan to use web-based XMPP clients (such as [Converse.js](https://conversejs.org/)), you can remove the port `443:443/tcp` mapping from the configuration.  
 4. Start the server with the command `docker compose up -d`.
 5. If you cannot log in, restart the server and check the logs in the console: `docker compose down && docker compose up`.
 

@@ -24,7 +24,6 @@ sed -i "s/^realm=.*/realm=$PROSODY_DOMAIN/" /app/turnserver.conf
 sed -i "s/^static-auth-secret=.*/static-auth-secret=$RANDOM_SECRET/" /app/turnserver.conf
 sed -i "s/^external-ip=.*/external-ip=$EXTERNAL_IP/" /app/turnserver.conf
 sed -i "s/^turn_external_secret=.*/turn_external_secret=\"$RANDOM_SECRET\"/" /etc/prosody/conf.d/01-modules.cfg.lua
-sed -i "s|https://[^:]*:5281/http-bind|https://$PROSODY_DOMAIN:5281/http-bind|g" /app/host-meta
 
 echo "Starting host-meta server..."
 nohup python3 -u /app/host-meta-server.py &

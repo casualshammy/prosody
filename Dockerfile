@@ -53,7 +53,6 @@ COPY ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
 COPY ./conf/conf.d /etc/prosody/conf.d
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./host-meta-server.py /app/host-meta-server.py
-COPY ./host-meta /app/host-meta
 
 RUN useradd --uid 9999 prosody_app && groupmod -g 9999 prosody_app
 
