@@ -4,7 +4,11 @@ if (adminJid ~= nil) then
 end
 
 pidfile = "/app/prosody.pid";
+
+-- registration
 allow_registration = Lua.os.getenv("PROSODY_ALLOW_REGISTRATION") == "true";
+min_seconds_between_registrations = 60 * 10; -- 10 minutes
+
 c2s_require_encryption = true;
 s2s_require_encryption = true;
 s2s_secure_auth = true
@@ -14,16 +18,17 @@ certificates = "/app/certs"
 log = {
     {levels = {min = "info"}, to = "console"};
 };
--- limits = {
---     c2s = {
---         rate = "3kb/s";
---         burst = "2s";
---     };
---     s2sin = {
---         rate = "30kb/s";
---         burst = "3s";
---     };
--- }
+
+limits = {
+    c2s = {
+        rate = "3kb/s";
+        burst = "2s";
+    };
+    s2sin = {
+        rate = "30kb/s";
+        burst = "3s";
+    };
+}
 
 interfaces = { "0.0.0.0" };
 
