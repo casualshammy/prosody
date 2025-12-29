@@ -27,6 +27,7 @@ modules_enabled = {
 		"invites_register"; -- Allows invited users to create accounts
 		"ping"; -- Replies to XMPP pings with pongs
 		"register"; -- Allow users to register on this server using a client and change passwords
+		"register_limits"; -- Limit registrations per time period and IP address
 		"time"; -- Let others know the time here on this server
 		"uptime"; -- Report how long server has been running
 		"version"; -- Replies to server version requests
@@ -38,9 +39,9 @@ modules_enabled = {
 		"admin_shell"; -- Allow secure administration via 'prosodyctl shell'
 
 	-- HTTP modules
-		"bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
+		"bosh"; -- XMPP over HTTP
+		"websocket"; -- XMPP over WebSockets
 		--"http_openmetrics"; -- for exposing metrics to stats collectors
-		--"websocket"; -- XMPP over WebSockets
 
 	-- Other specific functionality
 		"posix"; -- POSIX functionality, sends server to background, enables syslog, etc.
