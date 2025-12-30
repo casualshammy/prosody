@@ -15,7 +15,12 @@ if not DOMAIN:
 
 SSL_CERT = "/app/certs/" + DOMAIN + "/fullchain.pem"
 SSL_KEY = "/app/certs/" + DOMAIN + "/privkey.pem"
-HOST_META = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?><XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'><Link href='https://" + DOMAIN + ":5281/http-bind' rel='urn:xmpp:alt-connections:xbosh'/></XRD>").encode('utf-8')
+HOST_META = (
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+  "<XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>"
+  "<Link href='https://" + DOMAIN + ":5281/http-bind' rel='urn:xmpp:alt-connections:xbosh'/>"
+  "<Link href='wss://" + DOMAIN + ":5281/xmpp-websocket' rel='urn:xmpp:alt-connections:websocket'/>"
+  "</XRD>").encode('utf-8')
 
 reqCounter = 0
 
