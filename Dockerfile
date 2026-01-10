@@ -57,7 +57,10 @@ COPY ./conf/conf.d /etc/prosody/conf.d
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./www /app/www
 
-RUN useradd --uid 9999 prosody_app && groupmod -g 9999 prosody_app
+RUN useradd --uid 9999 prosody_app && \
+  groupmod -g 9999 prosody_app && \
+  mkdir -p /home/prosody_app && \
+  chown -R prosody_app:prosody_app /home/prosody_app
 
 RUN \
   echo 'min-port=50000' >> /etc/turnserver.conf && \
