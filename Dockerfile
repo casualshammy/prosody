@@ -32,56 +32,49 @@ EXPOSE 5281/tcp
 
 WORKDIR /app
 
+# Install packages, download modules, create user, and configure in single layer
 RUN apt update -y && \ 
   apt install wget -y && \
   wget https://prosody.im/downloads/repos/bookworm/prosody.sources -O /etc/apt/sources.list.d/prosody.sources && \
   apt update -y && \
   apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && \
   apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 -y && \ 
+  apt purge -y --auto-remove && \
   rm -rf /var/lib/apt/lists/* && \
-  apt purge -y --auto-remove
-
-# Creating folder structure
-RUN mkdir /app/certs && \
-  mkdir /app/data && \
-  mkdir /app/modules
-
-# Download and unpack Prosody modules
-RUN wget https://hg.prosody.im/prosody-modules/archive/tip.tar.gz && \
-  tar -xzf tip.tar.gz -C "/app/modules" --strip-components=1 && \
+  # Create folder structure
+  mkdir -p /app/certs /app/data /app/modules && \
+  # Download and unpack Prosody modules
+  wget https://hg.prosody.im/prosody-modules/archive/tip.tar.gz && \
+  tar -xzf tip.tar.gz -C /app/modules --strip-components=1 && \
   rm tip.tar.gz && \
-  rm -rf /app/modules/mod_cloud_notify
-
-# Copy configuration files
-COPY ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
-COPY ./conf/conf.d /etc/prosody/conf.d
-COPY ./entrypoint.sh /app/entrypoint.sh
-COPY ./www /app/www
-
-# Create prosody_app user
-RUN useradd --uid 9999 prosody_app && \
+  rm -rf /app/modules/mod_cloud_notify && \
+  # Create prosody_app user
+  useradd --uid 9999 prosody_app && \
   groupmod -g 9999 prosody_app && \
   mkdir -p /home/prosody_app && \
-  chown -R prosody_app:prosody_app /home/prosody_app
-
-# Configure coturn. Set files and folders permissions
-RUN \
-  echo 'min-port=50000' >> /etc/turnserver.conf && \
-  echo 'max-port=50100' >> /etc/turnserver.conf && \
-  echo 'no-multicast-peers' >> /etc/turnserver.conf && \
-  echo 'no-cli' >> /etc/turnserver.conf && \
-  echo 'no-tlsv1' >> /etc/turnserver.conf && \
-  echo 'no-tlsv1_1' >> /etc/turnserver.conf && \
-  echo 'log-file=stdout' >> /etc/turnserver.conf && \
-  echo 'realm=REALM' >> /etc/turnserver.conf && \
-  echo 'use-auth-secret' >> /etc/turnserver.conf && \
-  echo 'static-auth-secret=AUTH_SECRET' >> /etc/turnserver.conf && \
-  echo 'external-ip=0.0.0.0' >> /etc/turnserver.conf && \
+  chown -R prosody_app:prosody_app /home/prosody_app && \
+  # Configure coturn
+  { \
+    echo 'min-port=50000'; \
+    echo 'max-port=50100'; \
+    echo 'no-multicast-peers'; \
+    echo 'no-cli'; \
+    echo 'no-tlsv1'; \
+    echo 'no-tlsv1_1'; \
+    echo 'log-file=stdout'; \
+    echo 'realm=REALM'; \
+    echo 'use-auth-secret'; \
+    echo 'static-auth-secret=AUTH_SECRET'; \
+    echo 'external-ip=0.0.0.0'; \
+  } >> /etc/turnserver.conf && \
   cp /etc/turnserver.conf /app/turnserver.conf && \
-  rm -rf /etc/prosody/conf.d/localhost.cfg.lua && \
-  chmod +x /app/entrypoint.sh && \
-  chown -R prosody_app:prosody_app /app && \
-  chown -R prosody_app:prosody_app /etc/prosody
+  rm -rf /etc/prosody/conf.d/localhost.cfg.lua
+
+# Copy configuration files (separate layer for better caching)
+COPY --chown=prosody_app:prosody_app ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
+COPY --chown=prosody_app:prosody_app ./conf/conf.d /etc/prosody/conf.d
+COPY --chown=prosody_app:prosody_app --chmod=755 ./entrypoint.sh /app/entrypoint.sh
+COPY --chown=prosody_app:prosody_app ./www /app/www
   
 USER prosody_app
 
