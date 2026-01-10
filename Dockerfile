@@ -52,16 +52,19 @@ RUN wget https://hg.prosody.im/prosody-modules/archive/tip.tar.gz && \
   rm tip.tar.gz && \
   rm -rf /app/modules/mod_cloud_notify
 
+# Copy configuration files
 COPY ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
 COPY ./conf/conf.d /etc/prosody/conf.d
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./www /app/www
 
+# Create prosody_app user
 RUN useradd --uid 9999 prosody_app && \
   groupmod -g 9999 prosody_app && \
   mkdir -p /home/prosody_app && \
   chown -R prosody_app:prosody_app /home/prosody_app
 
+# Configure coturn. Set files and folders permissions
 RUN \
   echo 'min-port=50000' >> /etc/turnserver.conf && \
   echo 'max-port=50100' >> /etc/turnserver.conf && \

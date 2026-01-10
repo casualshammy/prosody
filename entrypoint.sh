@@ -27,7 +27,7 @@ sed -i "s/^turn_external_secret=.*/turn_external_secret=\"$RANDOM_SECRET\"/" /et
 sed -i "s|://[^:]*:|://$PROSODY_DOMAIN:|g" /app/www/.well-known/host-meta
 
 echo "Starting www server..."
-nohup npx http-server /app/www --port 443 -d false -i false --cors $PROSODY_DOMAIN --log-ip --tls --cert "/app/certs/$PROSODY_DOMAIN/fullchain.pem" --key "/app/certs/$PROSODY_DOMAIN/privkey.pem" &
+nohup npx http-server /app/www --port 443 -a 0.0.0.0 -d false -i false --cors $PROSODY_DOMAIN --log-ip --tls --cert "/app/certs/$PROSODY_DOMAIN/fullchain.pem" --key "/app/certs/$PROSODY_DOMAIN/privkey.pem" &
 
 echo "Starting turnserver..."
 /usr/bin/turnserver -c /app/turnserver.conf --daemon --pidfile=/app/turnserver.pid
