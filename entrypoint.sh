@@ -24,9 +24,10 @@ sed -i "s/^realm=.*/realm=$PROSODY_DOMAIN/" /app/turnserver.conf
 sed -i "s/^static-auth-secret=.*/static-auth-secret=$RANDOM_SECRET/" /app/turnserver.conf
 sed -i "s/^external-ip=.*/external-ip=$EXTERNAL_IP/" /app/turnserver.conf
 sed -i "s/^turn_external_secret=.*/turn_external_secret=\"$RANDOM_SECRET\"/" /etc/prosody/conf.d/01-modules.cfg.lua
+sed -i "s|://[^:]*:|://$PROSODY_DOMAIN:|g" /app/www/.well-known/host-meta
 
-echo "Starting host-meta server..."
-nohup python3 -u /app/host-meta-server.py &
+echo "Starting www server..."
+nohup npx http-server /app/www --port 443 -d false -i false --cors $PROSODY_DOMAIN --log-ip --tls --cert "/app/certs/$PROSODY_DOMAIN/fullchain.pem" --key "/app/certs/$PROSODY_DOMAIN/privkey.pem" &
 
 echo "Starting turnserver..."
 /usr/bin/turnserver -c /app/turnserver.conf --daemon --pidfile=/app/turnserver.pid

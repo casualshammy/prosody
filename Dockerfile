@@ -6,9 +6,9 @@
 #  - PROSODY_E2E_ENCRYPTION_WHITELIST
 #  - PROSODY_EXTERNAL_IP
 
-FROM debian:bookworm-slim
+FROM node:24-bookworm-slim
 
-# HTTPS FOR BOSH ADVERTISEMENT
+# HTTPS FOR BOSH / WEBSOCKET ADVERTISEMENT
 EXPOSE 443/tcp
 
 # TURN SERVER PORTS
@@ -31,13 +31,15 @@ EXPOSE 5269/tcp
 EXPOSE 5281/tcp
 
 WORKDIR /app
+
 RUN apt update -y && \ 
   apt install wget -y && \
   wget https://prosody.im/downloads/repos/bookworm/prosody.sources -O /etc/apt/sources.list.d/prosody.sources && \
   apt update -y && \
-  apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 python3 -y && \
+  apt install prosody coturn lua-dbi-common lua-dbi-sqlite3 -y && \
   apt remove liblua5.1-0-dev liblua5.1-0 lua5.1 -y && \ 
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/* && \
+  apt purge -y --auto-remove
 
 # Creating folder structure
 RUN mkdir /app/certs && \
@@ -47,12 +49,13 @@ RUN mkdir /app/certs && \
 # Download and unpack Prosody modules
 RUN wget https://hg.prosody.im/prosody-modules/archive/tip.tar.gz && \
   tar -xzf tip.tar.gz -C "/app/modules" --strip-components=1 && \
-  rm tip.tar.gz
+  rm tip.tar.gz && \
+  rm -rf /app/modules/mod_cloud_notify
 
 COPY ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
 COPY ./conf/conf.d /etc/prosody/conf.d
 COPY ./entrypoint.sh /app/entrypoint.sh
-COPY ./host-meta-server.py /app/host-meta-server.py
+COPY ./www /app/www
 
 RUN useradd --uid 9999 prosody_app && groupmod -g 9999 prosody_app
 
