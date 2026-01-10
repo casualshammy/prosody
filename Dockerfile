@@ -68,7 +68,9 @@ RUN apt update -y && \
     echo 'external-ip=0.0.0.0'; \
   } >> /etc/turnserver.conf && \
   cp /etc/turnserver.conf /app/turnserver.conf && \
-  rm -rf /etc/prosody/conf.d/localhost.cfg.lua
+  rm -rf /etc/prosody/conf.d/localhost.cfg.lua && \
+  chown -R prosody_app:prosody_app /app && \
+  chown -R prosody_app:prosody_app /etc/prosody
 
 # Copy configuration files (separate layer for better caching)
 COPY --chown=prosody_app:prosody_app ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
