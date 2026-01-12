@@ -19,6 +19,32 @@ echo "  - PROSODY_E2E_ENCRYPTION_WHITELIST: $PROSODY_E2E_ENCRYPTION_WHITELIST"
 
 RANDOM_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
 
+# Configure S3 upload if PROSODY_S3_ENABLED is set
+if [ -n "$PROSODY_S3_ENABLED" ]; then
+  echo "Configuring S3 upload..."
+  
+  echo "  - S3_REGION: $PROSODY_S3_REGION"
+  echo "  - S3_BUCKET: $PROSODY_S3_BUCKET"
+  echo "  - S3_FOLDER: $PROSODY_S3_PATH"
+  
+  # Replace S3 configuration in vhost config
+  sed -i "s/Component (domain_http_upload) \"http_file_share\"/Component (domain_http_upload) \"http_upload_s3\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_access_id = \".*\"/http_upload_s3_access_id = \"$PROSODY_S3_ACCESS_ID\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_secret_key = \".*\"/http_upload_s3_secret_key = \"$PROSODY_S3_SECRET_KEY\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_region = \".*\"/http_upload_s3_region = \"$PROSODY_S3_REGION\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_bucket = \".*\"/http_upload_s3_bucket = \"$PROSODY_S3_BUCKET\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s|http_upload_s3_path  = \".*\"|http_upload_s3_path  = \"$PROSODY_S3_PATH\"|" /etc/prosody/conf.d/05-vhost.cfg.lua
+else
+  echo "S3 upload not configured, using local http_file_share..."
+  # Restore original configuration
+  sed -i "s/Component (domain_http_upload) \"http_upload_s3\"/Component (domain_http_upload) \"http_file_share\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_access_id = \".*\"/http_upload_s3_access_id = \"S3_SECRET_ID\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_secret_key = \".*\"/http_upload_s3_secret_key = \"S3_SECRET_KEY\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_region = \".*\"/http_upload_s3_region = \"S3_REGION\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s/http_upload_s3_bucket = \".*\"/http_upload_s3_bucket = \"S3_BUCKET\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s|http_upload_s3_path  = \".*\"|http_upload_s3_path  = \"S3_PATH\"|" /etc/prosody/conf.d/05-vhost.cfg.lua
+fi
+
 echo "Adjusting configuration..."
 sed -i "s/^realm=.*/realm=$PROSODY_DOMAIN/" /app/turnserver.conf
 sed -i "s/^static-auth-secret=.*/static-auth-secret=$RANDOM_SECRET/" /app/turnserver.conf

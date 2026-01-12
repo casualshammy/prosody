@@ -31,6 +31,13 @@ Component (domain_http_upload) "http_file_share"
 	http_file_share_size_limit = size_limit
 	http_file_share_daily_quota = 10 * size_limit
 
+	http_upload_s3_access_id = "S3_SECRET_ID";
+	http_upload_s3_secret_key = "S3_SECRET_KEY";
+	http_upload_s3_region = "S3_REGION";
+	http_upload_s3_bucket = "S3_BUCKET";
+	http_upload_s3_path  = "S3_PATH";
+	http_upload_s3_file_size_limit = size_limit
+
 Component (domain_muc) "muc"
 	name = domain_muc
 	restrict_room_creation = false

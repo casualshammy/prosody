@@ -5,6 +5,12 @@
 #  - PROSODY_E2E_ENCRYPTION_REQUIRED
 #  - PROSODY_E2E_ENCRYPTION_WHITELIST
 #  - PROSODY_EXTERNAL_IP
+#  - PROSODY_S3_ENABLED
+#  - PROSODY_S3_ACCESS_ID
+#  - PROSODY_S3_SECRET_KEY
+#  - PROSODY_S3_REGION
+#  - PROSODY_S3_BUCKET
+#  - PROSODY_S3_PATH
 
 FROM node:24-bookworm-slim
 
@@ -48,6 +54,8 @@ RUN apt update -y && \
   tar -xzf tip.tar.gz -C /app/modules --strip-components=1 && \
   rm tip.tar.gz && \
   rm -rf /app/modules/mod_cloud_notify && \
+  mkdir -p /app/modules/mod_http_upload_s3 && \
+  wget https://raw.githubusercontent.com/LittleFox94/prosody-mod_http_upload_s3/refs/heads/configurable-s3-url/mod_http_upload_s3.lua -O /app/modules/mod_http_upload_s3/mod_http_upload_s3.lua && \
   # Create prosody_app user
   useradd --uid 9999 prosody_app && \
   groupmod -g 9999 prosody_app && \
@@ -69,6 +77,7 @@ RUN apt update -y && \
   } >> /etc/turnserver.conf && \
   cp /etc/turnserver.conf /app/turnserver.conf && \
   rm -rf /etc/prosody/conf.d/localhost.cfg.lua && \
+  # Set ownerships
   chown -R prosody_app:prosody_app /app && \
   chown -R prosody_app:prosody_app /etc/prosody
 
