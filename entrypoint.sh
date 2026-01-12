@@ -29,8 +29,8 @@ if [ -n "$PROSODY_S3_ENABLED" ]; then
   
   # Replace S3 configuration in vhost config
   sed -i "s/Component (domain_http_upload) \"http_file_share\"/Component (domain_http_upload) \"http_upload_s3\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
-  sed -i "s/http_upload_s3_access_id = \".*\"/http_upload_s3_access_id = \"$PROSODY_S3_ACCESS_ID\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
-  sed -i "s/http_upload_s3_secret_key = \".*\"/http_upload_s3_secret_key = \"$PROSODY_S3_SECRET_KEY\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s|http_upload_s3_access_id = \".*\"|http_upload_s3_access_id = \"$PROSODY_S3_ACCESS_ID\"|" /etc/prosody/conf.d/05-vhost.cfg.lua
+  sed -i "s|http_upload_s3_secret_key = \".*\"|http_upload_s3_secret_key = \"$PROSODY_S3_SECRET_KEY\"|" /etc/prosody/conf.d/05-vhost.cfg.lua
   sed -i "s/http_upload_s3_region = \".*\"/http_upload_s3_region = \"$PROSODY_S3_REGION\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
   sed -i "s/http_upload_s3_bucket = \".*\"/http_upload_s3_bucket = \"$PROSODY_S3_BUCKET\"/" /etc/prosody/conf.d/05-vhost.cfg.lua
   sed -i "s|http_upload_s3_path  = \".*\"|http_upload_s3_path  = \"$PROSODY_S3_PATH\"|" /etc/prosody/conf.d/05-vhost.cfg.lua
