@@ -7,6 +7,7 @@ This Docker image is designed for those who want to run their own XMPP server wi
 - Based on the well-established XMPP server [Prosody](https://prosody.im/).
 - Configured to achieve a 100% score on the [XMPP Compliance Tester](https://compliance.conversations.im/).
 - Audio/video call support: the image includes a pre-configured STUN/TURN server [coturn](https://github.com/coturn/coturn).
+- Option to use [AWS S3](https://aws.amazon.com/s3/) as file storage.
 - Unencrypted connections between clients and the server are prohibited. End-to-end (E2E) encryption is optionally mandatory.
 - Minimal setup: only the absolute minimum configuration is required.
 
@@ -33,7 +34,7 @@ Alternatively, you can use a subdomain, such as `xmpp.example.com`.
       - upload.example.com
          - fullchain.pem
          - privkey.pem
-3. Create a `docker-compose.yml` file with the following content (don't forget to replace `example.com` with your domain and `/home/prosody` with your folder where the Prosody database is stored):
+3. Create a `docker-compose.yml` file with the following content (replace `example.com` with your domain and `/home/prosody` with the path to your data folder):
    ```yml
    services:
      server:
@@ -63,15 +64,43 @@ Alternatively, you can use a subdomain, such as `xmpp.example.com`.
 4. Start the server with the command `docker compose up -d`.
 5. If you cannot log in, restart the server and check the logs in the console: `docker compose down && docker compose up`.
 
-### Useful commands
+### Using S3 for File Storage
+
+By default, Prosody stores uploaded files locally on disk. However, you can configure it to use AWS S3 for file storage.
+
+#### Benefits of Using S3
+- **Scalability**: No need to worry about disk space on your server.
+- **Reliability**: Data is stored with redundancy in the cloud.
+- **Availability**: Files are accessible directly from the S3 bucket.
+- **Separation of concerns**: File storage is separated from the Prosody server.
+
+#### Configuring S3 Storage
+
+To use S3, add [environment variables](#environment-variables) starting from `PROSODY_S3_` to your `docker-compose.yml`. Setting up the S3 bucket is beyond the scope of this README; please refer to AWS S3 documentation.
+
+**Note:** Your bucket policy must allow public read access.
+
+#### Switching Between Local and S3 Storage
+
+To **switch back to local storage**, simply remove the `PROSODY_S3_ENABLED` variable from the configuration or set it to an empty value.
+
+**Note:** When switching, existing files are not migrated automatically. Files uploaded to S3 will remain in S3, and new files will be stored locally (or vice versa).
+
+## Useful commands
 1. To register a user (if you have not allowed registration via XMPP clients), use the following command: `docker exec -it prosody-server-1 prosodyctl register <LOGIN> <DOMAIN> <PASSWORD>`. Replace the placeholders with your data.
 2. To display live logs: `docker logs -ft prosody-server-1`
-3. To print TURN server password use the following command: `docker exec -it prosody-server-1 cat turnserver.conf | grep static-auth-secret=`
+3. To print the TURN server password, use the following command: `docker exec -it prosody-server-1 cat turnserver.conf | grep static-auth-secret=`
 
-### Environment Variables
+## Environment Variables
 - `PROSODY_DOMAIN`: (MANDATORY) The domain where your server will operate.
 - `PROSODY_EXTERNAL_IP`: External IP address. Useful if your computer has more than one external IP address.
 - `PROSODY_ADMIN`: JID of the server administrator.
 - `PROSODY_ALLOW_REGISTRATION`: Whether to allow free registration on the server.
 - `PROSODY_E2E_ENCRYPTION_REQUIRED`: Whether E2E encryption is mandatory.
 - `PROSODY_E2E_ENCRYPTION_WHITELIST`: A comma-separated list of JIDs for which E2E encryption is not mandatory.
+- `PROSODY_S3_ENABLED`: Set any non-empty value to use AWS S3 as file storage.
+- `PROSODY_S3_ACCESS_ID`: Access Key ID for S3 access.
+- `PROSODY_S3_SECRET_KEY`: Secret Access Key for S3 access.
+- `PROSODY_S3_REGION`: S3 region (e.g., `us-east-1`, `eu-west-1`).
+- `PROSODY_S3_BUCKET`: S3 bucket name.
+- `PROSODY_S3_PATH`: Path inside the bucket (e.g., `uploads/`).
