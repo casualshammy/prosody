@@ -22,6 +22,13 @@ You will need:
    - `proxy.example.com`
    - `pubsub.example.com`
 
+   Additionally, you should configure the following SRV record to support direct TLS connections ([XEP-0368](https://xmpp.org/extensions/xep-0368.html)):
+   - **Name**: `_xmpps-client._tcp.example.com`
+   - **Priority**: `0`
+   - **Weight**: `5`
+   - **Port**: `5223`
+   - **Target**: `example.com`
+
 Alternatively, you can use a subdomain, such as `xmpp.example.com`.
 
 ### Deployment
