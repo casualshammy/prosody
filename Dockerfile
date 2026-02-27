@@ -54,8 +54,8 @@ RUN apt update -y && \
   tar -xzf tip.tar.gz -C /app/modules --strip-components=1 && \
   rm tip.tar.gz && \
   rm -rf /app/modules/mod_cloud_notify && \
-  mkdir -p /app/modules/mod_http_upload_s3 && \
-  wget https://raw.githubusercontent.com/LittleFox94/prosody-mod_http_upload_s3/refs/heads/configurable-s3-url/mod_http_upload_s3.lua -O /app/modules/mod_http_upload_s3/mod_http_upload_s3.lua && \
+  # mkdir -p /app/modules/mod_http_upload_s3 && \
+  # wget https://raw.githubusercontent.com/LittleFox94/prosody-mod_http_upload_s3/refs/heads/configurable-s3-url/mod_http_upload_s3.lua -O /app/modules/mod_http_upload_s3/mod_http_upload_s3.lua && \
   # Create prosody_app user
   useradd --uid 9999 prosody_app && \
   groupmod -g 9999 prosody_app && \
@@ -81,11 +81,12 @@ RUN apt update -y && \
   chown -R prosody_app:prosody_app /app && \
   chown -R prosody_app:prosody_app /etc/prosody
 
-# Copy configuration files (separate layer for better caching)
+# Copy files and folders
 COPY --chown=prosody_app:prosody_app ./conf/prosody.cfg.lua /etc/prosody/prosody.cfg.lua
 COPY --chown=prosody_app:prosody_app ./conf/conf.d /etc/prosody/conf.d
 COPY --chown=prosody_app:prosody_app --chmod=755 ./entrypoint.sh /app/entrypoint.sh
 COPY --chown=prosody_app:prosody_app ./www /app/www
+COPY --chown=prosody_app:prosody_app ./src/modules /app/modules/
   
 USER prosody_app
 
