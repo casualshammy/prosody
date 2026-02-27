@@ -90,14 +90,14 @@ local function get_cred_scope(timestamp, region, service)
 end
 
 local function get_signed_headers()
-	return "content-length;content-type;host;content-disposition"
+	return "content-length;content-type;host"
 end
 
 local function get_credential(_accessId, timestamp, region, service)
 	return _accessId .. "/" .. get_cred_scope(timestamp, region, service)
 end
 
-local function get_canonical_query_string(timestamp, credential, request_method)
+local function get_canonical_query_string(timestamp, credential, request_method, _filename)
 	local query_params = {
 		["X-Amz-Acl"]           = "public-read";
 		["X-Amz-Algorithm"]     = "AWS4-HMAC-SHA256";
@@ -105,6 +105,7 @@ local function get_canonical_query_string(timestamp, credential, request_method)
 		["X-Amz-Date"]          = get_iso8601_basic(timestamp);
 		["X-Amz-Expires"]       = "3600";
 		["X-Amz-SignedHeaders"] = get_signed_headers();
+		["Content-Disposition"] = "attachment;filename=\"" .. _filename .. "\"";
 	};
 
 	if request_method == "PUT" then
@@ -120,14 +121,13 @@ end
 
 local function get_hashed_canonical_request(timestamp, uri, request_method, credential, size, mime, _filename)
 	local unsigned_payload = "UNSIGNED-PAYLOAD"
-	local canonical_query_string = get_canonical_query_string(timestamp, credential, request_method)
+	local canonical_query_string = get_canonical_query_string(timestamp, credential, request_method, _filename)
 	local canonical_request = request_method .. "\n"
 		.. uri .. "\n"
 		.. canonical_query_string .. "\n"
 		.. "content-length:" .. size .."\n"
 		.. "content-type:" .. mime .."\n"
 		.. "host:" .. host .. "\n"
-    .. "content-disposition:attachment;filename=\"" .. _filename .. "\""
 		.. "\n"
 		.. get_signed_headers() .. "\n"
 		.. unsigned_payload
