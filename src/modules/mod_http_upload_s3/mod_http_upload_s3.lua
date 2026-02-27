@@ -160,7 +160,7 @@ local function build_signed_url(_accessId, _secretKey, timestamp, region, servic
 	local credential          = get_credential(_accessId, timestamp, region, service)
 	local string_to_sign      = get_string_to_sign(timestamp, region, service, uri, request_method, credential, size, mime, _filename)
 	local signature           = get_signature(derived_signing_key, string_to_sign)
-	local query_string        = get_canonical_query_string(timestamp, credential, request_method)
+	local query_string        = get_canonical_query_string(timestamp, credential, request_method, _filename)
 	local signed_query_string = query_string .. "&X-Amz-Signature=" .. signature
 	local url                 = build_uri(uri, signed_query_string)
 	return url
