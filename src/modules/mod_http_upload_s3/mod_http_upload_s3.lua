@@ -97,7 +97,7 @@ local function get_credential(_accessId, timestamp, region, service)
 	return _accessId .. "/" .. get_cred_scope(timestamp, region, service)
 end
 
-local function get_canonical_query_string(timestamp, credential, request_method, _filename)
+local function get_canonical_query_string(timestamp, credential, request_method)
 	local query_params = {
 		["X-Amz-Acl"]           = "public-read";
 		["X-Amz-Algorithm"]     = "AWS4-HMAC-SHA256";
@@ -105,7 +105,6 @@ local function get_canonical_query_string(timestamp, credential, request_method,
 		["X-Amz-Date"]          = get_iso8601_basic(timestamp);
 		["X-Amz-Expires"]       = "3600";
 		["X-Amz-SignedHeaders"] = get_signed_headers();
-		["Content-Disposition"] = "attachment;filename=\"" .. _filename .. "\"";
 	};
 
 	if request_method == "PUT" then
@@ -119,9 +118,9 @@ local function get_canonical_query_string(timestamp, credential, request_method,
 	return table.concat(qs_list, "&")
 end
 
-local function get_hashed_canonical_request(timestamp, uri, request_method, credential, size, mime, _filename)
+local function get_hashed_canonical_request(timestamp, uri, request_method, credential, size, mime)
 	local unsigned_payload = "UNSIGNED-PAYLOAD"
-	local canonical_query_string = get_canonical_query_string(timestamp, credential, request_method, _filename)
+	local canonical_query_string = get_canonical_query_string(timestamp, credential, request_method)
 	local canonical_request = request_method .. "\n"
 		.. uri .. "\n"
 		.. canonical_query_string .. "\n"
@@ -134,11 +133,11 @@ local function get_hashed_canonical_request(timestamp, uri, request_method, cred
 	return SHA256(canonical_request, true)
 end
 
-local function get_string_to_sign(timestamp, region, service, uri, request_method, credential, size, mime, _filename)
+local function get_string_to_sign(timestamp, region, service, uri, request_method, credential, size, mime)
 	return "AWS4-HMAC-SHA256\n"
 		.. get_iso8601_basic(timestamp) .. "\n"
 		.. get_cred_scope(timestamp, region, service) .. "\n"
-		.. get_hashed_canonical_request(timestamp, uri, request_method, credential, size, mime, _filename)
+		.. get_hashed_canonical_request(timestamp, uri, request_method, credential, size, mime)
 end
 
 local function get_signature(derived_signing_key, string_to_sign)
@@ -153,14 +152,14 @@ local function build_uri(uri, query_string)
 	return url
 end
 
-local function build_signed_url(_accessId, _secretKey, timestamp, region, service, uri, request_method, size, mime, _filename)
+local function build_signed_url(_accessId, _secretKey, timestamp, region, service, uri, request_method, size, mime)
 	-- we are using AWS Signature V 4 with query parameters instead of headers
 	-- ref: https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html
 	local derived_signing_key = get_derived_signing_key(_secretKey, timestamp, region, service)
 	local credential          = get_credential(_accessId, timestamp, region, service)
-	local string_to_sign      = get_string_to_sign(timestamp, region, service, uri, request_method, credential, size, mime, _filename)
+	local string_to_sign      = get_string_to_sign(timestamp, region, service, uri, request_method, credential, size, mime)
 	local signature           = get_signature(derived_signing_key, string_to_sign)
-	local query_string        = get_canonical_query_string(timestamp, credential, request_method, _filename)
+	local query_string        = get_canonical_query_string(timestamp, credential, request_method)
 	local signed_query_string = query_string .. "&X-Amz-Signature=" .. signature
 	local url                 = build_uri(uri, signed_query_string)
 	return url
@@ -172,9 +171,9 @@ local function get_public_get(_, _, uri)
 	return url
 end
 
-local function get_presigned_put(_accessId, _secretKey, service, region, uri, size, mime, _filename)
+local function get_presigned_put(_accessId, _secretKey, service, region, uri, size, mime)
 	local timestamp = tonumber(os.time())
-	local url       = build_signed_url(_accessId, _secretKey, timestamp, region, service, uri, "PUT", size, mime, _filename)
+	local url       = build_signed_url(_accessId, _secretKey, timestamp, region, service, uri, "PUT", size, mime)
 	return url
 end
 
@@ -204,11 +203,10 @@ local function handle_request(origin, stanza, xmlns, filename, filesize, filetyp
 	end
 
 	local random  = http.urlencode(uuid());
-	local clearedFilename = http.urlencode(filename)
   local extension = filename:match("%.([^%.]+)$") or "bin"
 	local uri     = string.format("/%s/%s/%s.%s", aws_bucket, aws_path, random, extension);
 	module:log("debug", "slot request %s %s", filesize, filetype);
-	local put_url = get_presigned_put(aws_access_id, aws_secret_key, aws_service, aws_region, uri, filesize, filetype, clearedFilename);
+	local put_url = get_presigned_put(aws_access_id, aws_secret_key, aws_service, aws_region, uri, filesize, filetype);
 	local get_url = get_public_get(aws_service, aws_region, uri);
 
 	module:log("debug", "Handing out upload slot GET %s PUT %s to %s@%s [%d %s]", get_url, put_url, origin.username, origin.host, filesize, filetype);
